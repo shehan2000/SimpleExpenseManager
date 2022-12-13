@@ -85,7 +85,7 @@ public class PersistentAccountDAO implements AccountDAO {
     public void updateBalance(String accountNo, ExpenseType expenseType, double amount) throws InvalidAccountException {
         SQLiteDatabase db=database.getWritableDatabase();
         Account acc = this.getAccount(accountNo);
-        Cursor c = db.query("account", new String[]{"account_no", "bank", "acc_holder", "balance"}, "account_no =?", new String[]{accountNo}, null, null, null);
+        Cursor c = db.query("account", new String[]{"accountNo", "bankName", "accountHolderName", "balance"}, "accountNo =?", new String[]{accountNo}, null, null, null);
         if (c != null) {
             c.moveToFirst();
 
