@@ -1,4 +1,4 @@
-#Tue Dec 13 09:53:02 IST 2022
+#Wed Dec 14 23:12:00 IST 2022
 base.0=D\:\\ACA S02\\ACA 03\\DBMS\\mini project\\my last\\SimpleExpenseManager\\app\\build\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
-renamed.0=classes.dex
 path.0=classes.dex
+renamed.0=classes.dex

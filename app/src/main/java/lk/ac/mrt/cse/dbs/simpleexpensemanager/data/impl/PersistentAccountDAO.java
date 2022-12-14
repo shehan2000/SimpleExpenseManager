@@ -15,14 +15,21 @@ import lk.ac.mrt.cse.dbs.simpleexpensemanager.data.model.ExpenseType;
 public class PersistentAccountDAO implements AccountDAO {
     private PersistentCreateDB database;
 
+
     public PersistentAccountDAO(PersistentCreateDB database) {
         this.database=database;
     }
+
+
     @Override
     public List<String> getAccountNumbersList() {
         List<String> acc_no = new ArrayList<>();
         SQLiteDatabase db=database.getReadableDatabase();
+
+        //reading account numbers from the database
         Cursor c = db.query(PersistentCreateDB.TABLE_ACCOUNTS, new String[] {database.KEY_ACCOUNT_NO},null,null,null,null,null);
+
+        //adding new account numbers to the database
         if(c.moveToFirst()){
             do{acc_no.add(c.getString(0));
             }while(c.moveToNext());
@@ -35,8 +42,12 @@ public class PersistentAccountDAO implements AccountDAO {
     public List<Account> getAccountsList() {
         List<Account> acc_list = new ArrayList<>();
         SQLiteDatabase db=database.getReadableDatabase();
+
+        //projection of the accounts table
         Cursor c = db.query(PersistentCreateDB.TABLE_ACCOUNTS, null,null,null,null,null,null);
         if(c.moveToFirst()){
+
+            //adding accounts to a list
             do{acc_list.add(new Account(c.getString(0),c.getString(1),c.getString(2),c.getDouble(3)));
             }while(c.moveToNext());
         }
@@ -45,6 +56,7 @@ public class PersistentAccountDAO implements AccountDAO {
 
     }
 
+    //reading accounts from the database
     @Override
     public Account getAccount(String accountNo) throws InvalidAccountException {
         Account acc;
@@ -61,6 +73,7 @@ public class PersistentAccountDAO implements AccountDAO {
         return acc;
     }
 
+    //adding accounts to the database
     @Override
     public void addAccount(Account account) {
         SQLiteDatabase db=database.getWritableDatabase();
@@ -69,11 +82,13 @@ public class PersistentAccountDAO implements AccountDAO {
         contentValues.put(PersistentCreateDB.KEY_BANK_NAME, account.getBankName());
         contentValues.put(PersistentCreateDB.KEY_ACCOUNT_HOLDER_NAME, account.getAccountHolderName());
         contentValues.put(PersistentCreateDB.KEY_BALANCE, account.getBalance());
+
         // Inserting Row
         db.insert(PersistentCreateDB.TABLE_ACCOUNTS, null, contentValues);
         db.close();
     }
 
+    //deleting accounts from the database
     @Override
     public void removeAccount(String accountNo) throws InvalidAccountException {
         SQLiteDatabase db=database.getWritableDatabase();
@@ -81,6 +96,7 @@ public class PersistentAccountDAO implements AccountDAO {
         db.close();
     }
 
+    //update balance in the database
     @Override
     public void updateBalance(String accountNo, ExpenseType expenseType, double amount) throws InvalidAccountException {
         SQLiteDatabase db=database.getWritableDatabase();
@@ -94,6 +110,8 @@ public class PersistentAccountDAO implements AccountDAO {
         double balance = c.getDouble(3);
 
         ContentValues contentValues = new ContentValues();
+
+        //calculating the balance
         switch (expenseType) {
             case EXPENSE:
                 contentValues.put(PersistentCreateDB.KEY_BALANCE, acc.getBalance() - amount);
@@ -102,6 +120,8 @@ public class PersistentAccountDAO implements AccountDAO {
                 contentValues.put(PersistentCreateDB.KEY_BALANCE, acc.getBalance() + amount);
                 break;
         }
+
+        //updating the account table
         db.update(PersistentCreateDB.TABLE_ACCOUNTS, contentValues, PersistentCreateDB.KEY_ACCOUNT_NO + " = ?",
                 new String[] { accountNo });
 
